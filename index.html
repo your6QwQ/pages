@@ -1,0 +1,416 @@
+<DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your6的个人空间</title>
+    <style>
+        /* --- 全局重置 --- */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            line-height: 1.6;
+            color: #333;
+            background-color: #e8e9ea;
+            overflow-x: hidden;
+            overflow-y: auto;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+            transition: color 0.3s;
+        }
+
+        img {
+            max-width: 100%;
+            display: block;
+        }
+
+        /* --- 导航栏 (深灰色) --- */
+        .banner {
+            background-color: #343a40;
+            color: white;
+            padding: 1rem 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+
+        .banner_title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+        }
+
+        .banner_buttons a {
+            color: #adb5bd;
+            margin-left: 2.6vw;
+            font-weight: 500;
+        }
+
+        .banner_buttons a:hover {
+            color: #fff;
+        }
+
+        /* --- 标题区域 (背景模糊变暗) --- */
+        .title_section {
+            position: relative;
+            min-height: 45vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            color: white;
+        }
+
+        .title_section::before {
+            content: '';
+            position: absolute;
+            top: 0; 
+            left: 0; 
+            width: 100%; 
+            height: calc(100% + 20vh);
+            background-image: url('resource/title_background.jpg');
+            background-size: cover;
+            background-position: center;
+            filter: blur(5px) brightness(0.8);
+            transform: scale(1.2);
+            z-index: -1;
+        }
+
+        .main_title {
+            font-size: 3.5rem;
+            margin-bottom: 2.5vh;
+            text-shadow: 0 4px 8px rgba(0,0,0,0.4);
+            animation: fadeInDown 1s ease;
+            position: relative;
+            z-index: 1;
+        }
+
+        .second_title {
+            font-size: 1.6rem; 
+            opacity: 0.9;
+            top: 3vh;
+            max-width: 700px; 
+            margin-bottom: 0.5vh;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.4);
+            animation: fadeInDown 1s ease;
+            position: relative;
+            z-index: 1;
+        }
+
+        .info-section {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(5px);
+            padding: 0.8rem 2.4rem;
+            margin: 0.5rem 2.4rem;
+            border-radius: 3rem;
+            border: 1px solid rgba(255,255,255,0.3);
+            font-weight: bold;
+            font-size: 0.95rem;
+            animation: fadeInUp 1.2s ease;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* --- 通用板块样式 (帮助/下载/交流) --- */
+        .content-section {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 0 0;
+        }
+
+        .card {
+            background: white;
+            border-radius: 1.2rem;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+            display: flex;
+            align-items: stretch;
+            overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            margin: 8vh 0;
+        }
+
+        .card:hover {
+            transform: translateY(-0.5rem);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+        }
+
+        /* 图片容器 */
+        .card-image {
+            width: 32rem;
+            overflow: hidden;
+        }
+
+        .card-image img {
+            height: 100%;
+            object-fit: cover;
+            width: auto;
+            transition: transform 0.5s ease;
+        }
+
+        .card:hover .card-image img {
+            transform: scale(1.05);
+        }
+
+        /* 文字容器 */
+        .card-text {
+            flex: 1;
+            padding: 4rem;
+            text-align: left;
+        }
+
+        /* 标题下划线样式 */
+        .section-title {
+            font-size: 2.2rem;
+            color: #2c3e50;
+            margin-bottom: 2vh;
+            position: relative;
+            display: inline-block;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            bottom: -0.8rem;
+            width: 6rem;
+            height: 0.4rem;
+            background-color: #3498db;
+            border-radius: 0.2rem;
+            transition: width 0.3s ease;
+        }
+
+        .card:hover .section-title::after {
+            width: 100%;
+        }
+
+        .section-desc {
+            color: #666;
+            font-size: 1.05rem; 
+            line-height: 1.8;
+        }
+
+        /* 交替布局逻辑 */
+        .card:nth-child(even) {
+            flex-direction: row-reverse;
+        }
+        
+        
+        .card:nth-child(even) .card-text {
+            text-align: left;
+        }
+
+        /* 交流板块特殊样式 */
+        .contact-list p {
+            display: flex;
+            align-items: center;
+            margin: 1.5rem 0;
+            font-size: 1.1rem;
+        }
+        .contact-list img {
+            width: 1.6em;
+            height: 1.6em;
+            margin-right: 0.5em;
+        }
+        .contact-list a {
+            color: #3498db;
+            font-weight: 600;
+        }
+        .contact-list a:hover {
+            text-decoration: underline;
+        }
+
+        /* --- 页脚 (深灰黑) --- */
+        .footer {
+            background-color: #212529;
+            color: #adb5bd;
+            text-align: center;
+            padding: 3rem 2.5rem;
+            margin-top: 6rem;
+            font-size: 0.9rem;
+            border-top: 0.4rem solid #343a40;
+        }
+
+        .jump_link {
+            color: #3498db;
+        }
+
+        /* --- 动画 --- */
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-3rem); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(3rem); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* --- 响应式适配 (手机端) --- */
+        @media (max-width: 768px) {
+            .banner {
+                flex-direction: column;
+                gap: 1.5rem;
+                padding: 1.5rem;
+            }
+            .banner_buttons a {
+                margin: 0 1rem;
+            }
+            
+            .main_title { font-size: 2.2rem; }
+            .title_section { min-height: 35vh; }
+
+            /* 手机端取消交替布局，恢复上下结构 */
+            .card, .card:nth-child(even) {
+                margin: 8vh 0;
+                flex-direction: column;
+            }
+            .card-image {
+                width: 100%;
+                flex: none;
+            }
+            .card-text {
+                padding: 2.5rem;
+                text-align: center;
+            }
+            .section-title::after {
+                left: 50%;
+                transform: translateX(-50%);
+            }
+            .card:hover .section-title::after {
+                width: 8rem;
+            }
+            
+            .card {
+                margin: 6vh 0;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- 导航栏 -->
+    <header class="banner">
+        <div class="banner_title"><a href="https://www.your6.icu/">Your6的个人空间</a></div>
+        <nav class="banner_buttons">
+            <a href="#title_section" class="smooth-scroll">首页</a>
+            <a href="#help_section" class="smooth-scroll">帮助</a>
+            <a href="#download_section" class="smooth-scroll">下载</a>
+            <a href="#communication_section" class="smooth-scroll">交流</a>
+        </nav>
+    </header>
+
+    <!-- 标题区域 -->
+    <section id="title_section" class="title_section">
+        <p class="second_title">当前服务器正在运行的是：</p>
+        <h1 class="main_title">欢迎来到 远东城！</h1>
+        <div class="info-section">
+            <p>INFO: 本网站用于技术分享，共同学习，无营利性。</p>
+        </div>
+    </section>
+
+    <!-- 内容包裹层 -->
+    <div class="content-section">
+        
+        <!-- 1. 帮助板块 (左图右文) -->
+        <section id="help_section" class="card">
+            <div class="card-image">
+                <img src="resource/help_background.jpg" alt="帮助背景">
+            </div>
+            <div class="card-text">
+                <h2 class="section-title">帮助</h2>
+                <p class="section-desc">
+                    该板块正在完善中 owo ！
+                </p>
+            </div>
+        </section>
+
+        <!-- 2. 下载板块 (右图左文 - 自动交替) -->
+        <section id="download_section" class="card">
+            <div class="card-image">
+                <img src="resource/download_background.jpg" alt="下载背景">
+            </div>
+            <div class="card-text">
+                <h2 class="section-title">下载</h2>
+                <div class="section-desc">
+                    <p>提供所需文件的下载方式。</p>
+                    <p>包括自制的简单MC整合包等。</p>
+                    <p>如有需要请<a href="/files", class="jump_link">点此</a>进入文件分享站。
+                </div>
+            </div>
+        </section>
+
+        <!-- 3. 交流板块 (左图右文 - 自动交替) -->
+        <section id="communication_section" class="card">
+            <div class="card-image">
+                <img src="resource/communication_background.jpg" alt="交流背景">
+            </div>
+            <div class="card-text">
+                <h2 class="section-title">交流</h2>
+                <div class="contact-list">
+                    <p>
+                        <img src="resource/qq_icon.ico" alt="QQ" onerror="this.style.display='none'">
+                        <a href="https://qm.qq.com/q/qRBISuwV32" target="_blank">QQ群：1084537261</a>
+                    </p>
+                    <p>
+                        <img src="resource/oopz_icon.png" alt="OOPZ" onerror="this.style.display='none'">
+                        <a href="https://oopz.cn/i/gkJBO2" target="_blank">OOPZ 频道：481190468</a>
+                    </p>
+                    <p style="margin-top:2rem; font-size: 0.9rem; color: #888;">
+                        欢迎加入我们的大家庭，一起分享乐趣！
+                    </p>
+                </div>
+            </div>
+        </section>
+
+    </div>
+
+        <footer class="footer">
+        <p>备案信息：
+            <a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=44011302005322" target="_blank" rel="noopener">粤公网安备44011302005322号</a>
+            <a href="http://beian.miit.gov.cn" target="_blank" rel="noopener">粤ICP备2026021931号</a>
+        </p>
+        <div style="margin-top: 0.5rem; opacity: 0.6;">
+            <p>&copy; 2026 Your6's Blog. All Rights Reserved.</p>
+            <p>部分资源来源于网络，侵权立删。请联系我。 email：w1582268909@outloook.com</p>
+        </div>
+    </footer>
+
+    <script>
+        // 平滑滚动到目标元素的函数
+        function smoothScrollTo(targetId) {
+            const targetElement = document.getElementById(targetId);
+            if (targetElement) {
+                const offsetTop = targetElement.offsetTop - window.innerHeight / 2 + targetElement.offsetHeight / 2;
+                window.scrollTo({
+                    top: offsetTop,
+                    behavior: 'smooth'
+                });
+            }
+        }
+
+        // 为所有带有 smooth-scroll 类的链接添加点击事件监听器
+        document.querySelectorAll('.smooth-scroll').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault(); // 阻止默认的锚点跳转行为
+                
+                const targetId = this.getAttribute('href').substring(1); // 获取目标ID（去掉 # 号）
+                smoothScrollTo(targetId);
+            });
+        });
+    </script>
+
+</body>
+</html>

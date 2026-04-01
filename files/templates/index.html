@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your6的个人空间 - {% if current_path != '/' %}{{ current_path }}{% else %}根目录{% endif %}</title>
+    <style>
+        /* --- 全局重置 --- */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            line-height: 1.6;
+            color: #333;
+            background-color: #e8e9ea;
+            overflow-x: hidden;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+            transition: color 0.3s;
+        }
+
+        img {
+            max-width: 100%;
+            display: block;
+        }
+
+        .banner {
+            background-color: #343a40;
+            color: white;
+            padding: 1rem 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+
+        .banner_title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+        }
+
+        .banner_buttons a {
+            color: #adb5bd;
+            margin-left: 2.6vw;
+            font-weight: 500;
+        }
+
+        .banner_buttons a:hover {
+            color: #fff;
+        }
+
+        .main_content {
+            margin: 0 auto;
+            flex: 1;
+            max-width: 80vw;
+            min-width: 80vw;
+        }
+
+        .card {
+            background: white;
+            border-radius: 1.2rem;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+            display: flex;
+            flex-direction: column;
+            align-items: stretch;
+            overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            padding: 8vh 4vw;
+            margin: 8vh 0;
+        }
+
+        .footer {
+            background-color: #212529;
+            color: #adb5bd;
+            text-align: center;
+            padding: 3rem 2.5rem;
+            margin-top: 3rem;
+            font-size: 0.9rem;
+            border-top: 0.4rem solid #343a40;
+        }
+
+        .file-list {
+            list-style-type: none;
+            width: 100%;
+        }
+        
+        .file-list li {
+            padding: 0.5em 0;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            align-items: center;
+        }
+        
+        .file-list li:last-child {
+            border-bottom: none;
+        }
+        
+        .file-icon {
+            margin-right: 1em;
+            font-size: 1.2em;
+        }
+        
+        .folder-icon { color: #FFA500; } /* 橙色代表文件夹 */
+        .file-icon-generic { color: #4682B4; } /* 钢蓝色代表文件 */
+        
+        .readme_content {
+            margin-top: 1rem;
+        }
+        
+        .readme_content .card {
+            padding: 2rem;
+        }
+        
+        /* Markdown 内容样式 */
+        .readme_body h1, .readme_body h2 { margin-top: 1.0em; margin-bottom: 0.5em; }
+        .readme_body p { margin-bottom: 1em; }
+        .readme_body pre { background-color: #f4f4f4; padding: 1em; overflow-x: auto; }
+        .readme_body code { font-family: consolas; background-color: #e0e0e0; padding: 0.2em 0.4em; border-radius: 0.2em 0.4em 0.2em 0.4em; }
+        .readme_body ul, .readme_body ol { margin-left: 1.5em; }
+    </style>
+</head>
+
+<body>
+    <header class="banner">
+        <div class="banner_title"><a href="/">Your6的个人空间</a></div>
+        <nav class="banner_buttons">
+            <a href="/">首页</a>
+            <a href="/#help_section" class="smooth-scroll">帮助</a>
+            <a href="/files">下载</a>
+            <a href="/#communication_section" class="smooth-scroll">交流</a>
+        </nav>
+    </header>
+
+    <main class="main_content">
+        <section class="dir_content">
+            <div class="card">
+                <h2>文件分享 | 当前路径: <strong>{% if current_path != '/' %}{{ current_path }}{% else %}根目录{% endif %}</strong></h2>
+                <ul class="file-list">
+                    {% if parent_path %}
+                        <li>
+                            <a href="{{ parent_path }}"><span class="file-icon folder-icon">📁</span>.. (上级目录)</a>
+                        </li>
+                    {% endif %}
+                    {% for item in file_list %}
+                        <li>
+                            {% if item.is_dir %}
+                                <a href="{{ item.url_path }}"><span class="file-icon folder-icon">📁</span>{{ item.name }}/</a>
+                            {% else %}
+                                <a href="{{ item.url_path }}" target="_blank"><span class="file-icon file-icon-generic">📄</span>{{ item.name }}</a>
+                            {% endif %}
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </section>
+
+        {% if readme_html %}
+        <section class="readme_content">
+            <div class="card">
+                <div class="readme_body">
+                    {{ readme_html | safe }}
+                </div>
+            </div>
+        </section>
+        {% endif %}
+    </main>
+
+    <footer class="footer">
+        <p>备案信息：
+            <a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=44011302005322" target="_blank" rel="noopener">粤公网安备44011302005322号</a>
+            <a href="http://beian.miit.gov.cn" target="_blank" rel="noopener">粤ICP备2026021931号</a>
+        </p>
+        <div style="margin-top: 0.5rem; opacity: 0.6;">
+            <p>&copy; 2026 Your6's Blog. All Rights Reserved.</p>
+            <p>部分资源来源于网络，侵权立删。请联系我。 email：w1582268909@outlook.com</p>
+        </div>
+    </footer>
+</body>
+</html>
