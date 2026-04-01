@@ -1,2 +1,4 @@
 /files/content/*
+/files/.venv/
+/files/__pycache__/
 /restart.sh
